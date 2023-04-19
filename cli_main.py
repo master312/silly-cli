@@ -12,5 +12,12 @@ CliLooper()
 # Register example commands
 example_commands.register_example_commands()
 
+
+def tick_when_idle():
+    # print("TICKING WHILE IDLEEEE")
+    pass
+
+
 # Run infinite loop
+CliLooper().set_tick_when_idle(tick_when_idle)
 CliLooper().run()

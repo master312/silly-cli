@@ -27,10 +27,12 @@ def cmd_help():
 
 class CliLooper(metaclass=SingletonMeta):
     def __init__(self):
-        self.commands = List[Dict[str, Callable]]
+        # self.commands = List[Dict[str, Callable]]
         self.commands = [
             {"help": cmd_help}
         ]
+
+        self.tick_while_idle = None
 
     def register_command(self, custom_name: str, callback: Callable):
         """ Register callback function """
@@ -46,13 +48,20 @@ class CliLooper(metaclass=SingletonMeta):
         self.commands.append({custom_name: callback})
         logging.debug(f"New command '{custom_name}' added.")
 
+    def set_tick_when_idle(self, method: Callable):
+        self.tick_while_idle = method
+
     def run(self):
         """ Infinite loop that runs CLI """
         print("Welcome to the silly command line interface")
         while True:
-            if not select.select([sys.stdin], [], [], 0.0)[0]:
+            selection = select.select([sys.stdin], [], [], 0.0)[0]
+            if not selection or len(selection) == 0:
                 # User has not entered anything
-                pass
+                if self.tick_while_idle is not None:
+                    self.tick_while_idle()
+
+                continue
 
             # Read the input
             in_string = input('> ')
