@@ -54,6 +54,7 @@ class CliLooper(metaclass=SingletonMeta):
     def run(self):
         """ Infinite loop that runs CLI """
         print("Welcome to the silly command line interface")
+        print("> ", end='')
         while True:
             selection = select.select([sys.stdin], [], [], 0.0)[0]
             if not selection or len(selection) == 0:
